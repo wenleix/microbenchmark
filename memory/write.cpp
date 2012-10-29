@@ -10,20 +10,20 @@ const int Size = 1024 * 1024 * 1024 / 4;    // 1G
 float c[Size];
 
 int main() {
-	for (int i = 0; i < Size; i++) {
-		c[i] = 0;
-	}
+    for (int i = 0; i < Size; i++) {
+        c[i] = 0;
+    }
 
-	float *cend = c + Size;
-	float *cptr = c;
-	
+    float *cend = c + Size;
+    float *cptr = c;
+
     timeval start, end;
     gettimeofday(&start, NULL);
 
-	while (cptr != cend) {
-		*cptr = 1.23f;
-		cptr += STRIDE;
-	}
+    while (cptr != cend) {
+        *cptr = 1.23f;
+        cptr += STRIDE;
+    }
 
     gettimeofday(&end, NULL);
     double elapsed = (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_usec - start.tv_usec);
