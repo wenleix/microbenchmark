@@ -81,8 +81,23 @@ int main(int argc, char** argv) {
     gettimeofday(&start, NULL);
 
     pthread_t p[100];
-    for (int i = 0; i < numThread; i++) 
-        pthread_create(p + i, NULL, workerThread, (void*)(s[i]));
+    for (int i = 0; i < numThread; i++) {
+        pthread_attr_t attr;
+        pthread_attr_init(&attr);
+        cpu_set_t cpu_set;
+        CPU_ZERO(&cpu_set);
+
+        //  Simple linear affinity (i.e. Thread i is attached to CPU i)
+        CPU_SET(i, &cpu_set);
+        //  Set up affinity
+        if (pthread_attr_setaffinity_np(&attr, sizeof(cpu_set), &cpu_set) != 0) {
+            fprintf(stderr, "Set Affinity Failed!\n");
+            return 1;
+        }
+
+        pthread_create(p + i, &attr, workerThread, (void*)(s[i]));
+    }
+
     for (int i = 0; i < numThread; i++)
         pthread_join(p[i], NULL);
 
